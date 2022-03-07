@@ -3,6 +3,10 @@
 
 #include <cairo.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void draw_centered_text(cairo_t *cr, const char *font, double x, double y,
 			       double fontsize, const char *text);
 
@@ -17,4 +21,9 @@ void draw_left_justified_text(cairo_t *cr, const char *font,
 void draw_vertical_centered_text(cairo_t *cr, const char *font, double x,
 					double y, double fontsize,
 					const char *text);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

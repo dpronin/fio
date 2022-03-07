@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fio_sha512_ctx {
 	uint64_t state[8];
 	uint32_t count[4];
@@ -12,5 +16,9 @@ struct fio_sha512_ctx {
 
 void fio_sha512_init(struct fio_sha512_ctx *);
 void fio_sha512_update(struct fio_sha512_ctx *, const uint8_t *, unsigned int);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

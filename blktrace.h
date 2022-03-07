@@ -1,6 +1,9 @@
 #ifndef FIO_BLKTRACE_H
 #define FIO_BLKTRACE_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #ifdef FIO_HAVE_BLKTRACE
 
@@ -50,4 +53,9 @@ static inline int merge_blktrace_iologs(struct thread_data *td)
 }
 
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

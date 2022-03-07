@@ -1,6 +1,8 @@
 #ifndef FIO_DDIR_H
 #define FIO_DDIR_H
 
+#include <stddef.h>
+
 enum fio_ddir {
 	DDIR_READ = 0,
 	DDIR_WRITE = 1,
@@ -16,7 +18,7 @@ enum fio_ddir {
 	DDIR_RWDIR_SYNC_CNT = 4,
 };
 
-#define for_each_rw_ddir(ddir)	for (enum fio_ddir ddir = 0; ddir < DDIR_RWDIR_CNT; ddir++)
+#define for_each_rw_ddir(ddir)	for (int ddir = 0; ddir < DDIR_RWDIR_CNT; ddir++)
 
 static inline const char *io_ddir_name(enum fio_ddir ddir)
 {

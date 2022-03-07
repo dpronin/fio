@@ -20,6 +20,14 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint32_t fio_crc32(const void * const, unsigned long);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

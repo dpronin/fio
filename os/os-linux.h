@@ -167,12 +167,12 @@ static inline int ioprio_set(int which, int who, int ioprio_class, int ioprio,
 		       ioprio_value(ioprio_class, ioprio, ioprio_hint));
 }
 
-#ifndef CONFIG_HAVE_GETTID
-static inline int gettid(void)
-{
-	return syscall(__NR_gettid);
-}
-#endif
+// #ifndef CONFIG_HAVE_GETTID
+// static inline int gettid(void)
+// {
+// 	return syscall(__NR_gettid);
+// }
+// #endif
 
 #define SPLICE_DEF_SIZE	(64*1024)
 

@@ -1,6 +1,10 @@
 #ifndef FIO_OPT_GROUP_H
 #define FIO_OPT_GROUP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct opt_group {
 	const char *name;
 	uint64_t mask;
@@ -126,5 +130,9 @@ enum opt_category_group {
 
 extern const struct opt_group *opt_group_from_mask(uint64_t *mask);
 extern const struct opt_group *opt_group_cat_from_mask(uint64_t *mask);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

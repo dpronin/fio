@@ -8,6 +8,10 @@
 #include "lib/types.h"
 #include "stat.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fio_net_cmd;
 
 enum {
@@ -151,5 +155,8 @@ extern int sum_stat_clients;
 extern struct thread_stat client_ts;
 extern struct group_run_stats client_gs;
 
+#ifdef __cplusplus
+}
 #endif
 
+#endif

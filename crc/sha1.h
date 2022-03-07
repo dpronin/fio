@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Based on the Mozilla SHA1 (see mozilla-sha1/sha1.h),
  * optimized to do word accesses rather than byte accesses,
@@ -18,5 +22,9 @@ struct fio_sha1_ctx {
 void fio_sha1_init(struct fio_sha1_ctx *);
 void fio_sha1_update(struct fio_sha1_ctx *, const void *dataIn, unsigned long len);
 void fio_sha1_final(struct fio_sha1_ctx *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

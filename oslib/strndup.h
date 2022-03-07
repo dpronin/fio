@@ -5,7 +5,15 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 char *strndup(const char *s, size_t n);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

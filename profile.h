@@ -3,6 +3,10 @@
 
 #include "flist.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Functions for overriding internal fio io_u functions
  */
@@ -46,5 +50,9 @@ void profile_add_hooks(struct thread_data *);
 
 int profile_td_init(struct thread_data *);
 void profile_td_exit(struct thread_data *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

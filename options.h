@@ -8,6 +8,10 @@
 #include "parse.h"
 #include "lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int add_option(const struct fio_option *);
 void invalidate_profile_options(const char *);
 extern char *exec_profile;
@@ -53,5 +57,9 @@ extern const struct fio_option *
 find_option_c(const struct fio_option *, const char *);
 extern struct fio_option *fio_option_find(const char *);
 extern unsigned int fio_get_kb_base(void *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

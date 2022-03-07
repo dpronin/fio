@@ -88,6 +88,10 @@ typedef struct aiocb os_aiocb_t;
 #define POSIX_FADV_NORMAL	(0)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef FIO_HAVE_CPU_AFFINITY
 #define fio_cpu_clear(mask, cpu)	do { } while (0)
 typedef unsigned long os_cpu_mask_t;
@@ -422,6 +426,10 @@ static inline void os_clk_tck(long *clk_tck)
 }
 #else
 extern void os_clk_tck(long *clk_tck);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* FIO_OS_H */

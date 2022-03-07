@@ -1,8 +1,12 @@
 #ifndef FIO_LOG_H
 #define FIO_LOG_H
 
-#include <stdio.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdarg.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #include "lib/output_buffer.h"
@@ -36,5 +40,9 @@ enum {
 };
 
 extern const char *log_get_level(int level);
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif

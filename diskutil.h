@@ -10,6 +10,10 @@
 #include "flist.h"
 #include "lib/ieee754.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * @ios: Number of I/O operations that have been completed successfully.
  * @merges: Number of I/O operations that have been merged.
@@ -132,6 +136,10 @@ extern void disk_util_prune_entries(void);
 static inline int update_io_ticks(void)
 {
 	return helper_should_exit();
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif
 

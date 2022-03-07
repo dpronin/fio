@@ -1,6 +1,10 @@
 #ifndef FIO_TRIM_H
 #define FIO_TRIM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef FIO_HAVE_TRIM
 #include "flist.h"
 #include "iolog.h"
@@ -34,6 +38,10 @@ static inline bool io_u_should_trim(struct thread_data *td, struct io_u *io_u)
 }
 static inline void remove_trim_entry(struct thread_data *td, struct io_piece *ipo)
 {
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif
 

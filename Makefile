@@ -22,7 +22,8 @@ endif
 DEBUGFLAGS = -DFIO_INC_DEBUG
 CPPFLAGS+= -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -DFIO_INTERNAL $(DEBUGFLAGS)
 OPTFLAGS= -g -ffast-math
-FIO_CFLAGS= -std=gnu99 -Wwrite-strings -Wall -Wdeclaration-after-statement $(OPTFLAGS) $(EXTFLAGS) $(BUILD_CFLAGS) -I. -I$(SRCDIR)
+FIO_C_STANDARD = -std=gnu99
+FIO_CFLAGS= -Wwrite-strings -Wall -Wdeclaration-after-statement $(OPTFLAGS) $(EXTFLAGS) $(BUILD_CFLAGS) -I. -I$(SRCDIR)
 LIBS	+= -lm $(EXTLIBS)
 PROGS	= fio
 SCRIPTS = $(addprefix $(SRCDIR)/,tools/fio_generate_plots tools/plot/fio2gnuplot tools/genfio tools/fiologparser.py tools/hist/fiologparser_hist.py tools/hist/fio-histo-log-pctiles.py tools/fio_jsonplus_clat2csv)
@@ -46,23 +47,25 @@ ifeq ($(CC),clang)
 endif
 
 ifdef CONFIG_GFIO
-  PROGS += gfio
+	PROGS += gfio
 endif
 
-SOURCE :=	$(sort $(patsubst $(SRCDIR)/%,%,$(wildcard $(SRCDIR)/crc/*.c)) \
-		$(patsubst $(SRCDIR)/%,%,$(wildcard $(SRCDIR)/lib/*.c))) \
-		gettime.c ioengines.c init.c stat.c log.c time.c filesetup.c \
-		eta.c verify.c memory.c io_u.c parse.c fio_sem.c rwlock.c \
-		pshared.c options.c \
-		smalloc.c filehash.c profile.c debug.c engines/cpu.c \
+SOURCE_CXX :=	$(sort $(patsubst $(SRCDIR)/%,%,$(wildcard $(SRCDIR)/crc/*.cpp)) \
+		$(patsubst $(SRCDIR)/%,%,$(wildcard $(SRCDIR)/lib/*.cpp))) \
+		gettime.cpp ioengines.cpp init.cpp stat.cpp log.cpp time.cpp filesetup.cpp \
+		eta.cpp verify.cpp memory.cpp io_u.cpp parse.cpp fio_sem.cpp rwlock.cpp \
+		pshared.cpp options.cpp \
+		smalloc.cpp filehash.cpp profile.cpp debug.cpp \
+		server.cpp client.cpp iolog.cpp backend.cpp libfio.cpp flow.cpp cconv.cpp \
+		gettime-thread.cpp helpers.cpp json.cpp idletime.cpp td_error.cpp \
+		profiles/tiobench.cpp profiles/act.cpp io_u_queue.cpp filelock.cpp \
+		workqueue.cpp rate-submit.cpp optgroup.cpp helper_thread.cpp \
+		steadystate.cpp zone-dist.cpp zbd.cpp dedupe.cpp fdp.cpp  \
+
+SOURCE := engines/cpu.c \
 		engines/mmap.c engines/sync.c engines/null.c engines/net.c \
 		engines/ftruncate.c engines/fileoperations.c \
-		engines/exec.c \
-		server.c client.c iolog.c backend.c libfio.c flow.c cconv.c \
-		gettime-thread.c helpers.c json.c idletime.c td_error.c \
-		profiles/tiobench.c profiles/act.c io_u_queue.c filelock.c \
-		workqueue.c rate-submit.c optgroup.c helper_thread.c \
-		steadystate.c zone-dist.c zbd.c dedupe.c fdp.c
+		engines/exec.c
 
 ifdef CONFIG_LIBHDFS
   HDFSFLAGS= -I $(JAVA_HOME)/include -I $(JAVA_HOME)/include/linux -I $(FIO_LIBHDFS_INCLUDE)
@@ -172,27 +175,27 @@ ifdef CONFIG_DFS
   dfs_LIBS = -luuid -ldaos -ldfs
   ENGINES += dfs
 endif
-SOURCE += oslib/asprintf.c
+SOURCE_CXX += oslib/asprintf.cpp
 ifndef CONFIG_STRSEP
-  SOURCE += oslib/strsep.c
+  SOURCE_CXX += oslib/strsep.cpp
 endif
 ifndef CONFIG_STRCASESTR
-  SOURCE += oslib/strcasestr.c
+  SOURCE_CXX += oslib/strcasestr.cpp
 endif
 ifndef CONFIG_STRLCAT
-  SOURCE += oslib/strlcat.c
+  SOURCE_CXX += oslib/strlcat.cpp
 endif
 ifndef CONFIG_HAVE_STRNDUP
-  SOURCE += oslib/strndup.c
+  SOURCE_CXX += oslib/strndup.cpp
 endif
 ifndef CONFIG_GETOPT_LONG_ONLY
-  SOURCE += oslib/getopt_long.c
+  SOURCE_CXX += oslib/getopt_long.cpp
 endif
 ifndef CONFIG_INET_ATON
-  SOURCE += oslib/inet_aton.c
+  SOURCE_CXX += oslib/inet_aton.cpp
 endif
 ifndef CONFIG_HAVE_STATX
-  SOURCE += oslib/statx.c
+  SOURCE_CXX += oslib/statx.cpp
 endif
 ifdef CONFIG_GFAPI
   SOURCE += engines/glusterfs.c
@@ -205,8 +208,8 @@ ifdef CONFIG_GFAPI
 endif
 ifdef CONFIG_MTD
   SOURCE += engines/mtd.c
-  SOURCE += oslib/libmtd.c
-  SOURCE += oslib/libmtd_legacy.c
+  SOURCE_CXX += oslib/libmtd.cpp
+  SOURCE_CXX += oslib/libmtd_legacy.cpp
 endif
 ifdef CONFIG_LINUX_DEVDAX
   dev-dax_SRCS = engines/dev-dax.c
@@ -239,22 +242,21 @@ ifdef CONFIG_LIBBLKIO
   ENGINES += libblkio
 endif
 ifeq ($(CONFIG_TARGET_OS), Linux)
-  SOURCE += diskutil.c fifo.c blktrace.c cgroup.c trim.c engines/sg.c \
-		oslib/linux-dev-lookup.c engines/io_uring.c engines/nvme.c
+  SOURCE += engines/sg.c engines/io_uring.c engines/nvme.c
+  SOURCE_CXX += oslib/linux-dev-lookup.cpp diskutil.cpp fifo.cpp blktrace.cpp cgroup.cpp trim.cpp
   cmdprio_SRCS = engines/cmdprio.c
 ifdef CONFIG_HAS_BLKZONED
-  SOURCE += oslib/linux-blkzoned.c
+  SOURCE_CXX += oslib/linux-blkzoned.cpp
 endif
   LIBS += -lpthread -ldl
   LDFLAGS += -rdynamic
 endif
 ifeq ($(CONFIG_TARGET_OS), Android)
-  SOURCE += diskutil.c fifo.c blktrace.c cgroup.c trim.c profiles/tiobench.c \
-		oslib/linux-dev-lookup.c engines/io_uring.c engines/nvme.c \
-		engines/sg.c
+  SOURCE += engines/io_uring.c engines/nvme.c engines/sg.c
+  SOURCE_CXX += diskutil.cpp fifo.cpp blktrace.cpp cgroup.cpp trim.cpp profiles/tiobench.cpp oslib/linux-dev-lookup.cpp
   cmdprio_SRCS = engines/cmdprio.c
 ifdef CONFIG_HAS_BLKZONED
-  SOURCE += oslib/linux-blkzoned.c
+  SOURCE_CXX += oslib/linux-blkzoned.cpp
 endif
   LIBS += -ldl -llog
   LDFLAGS += -rdynamic
@@ -264,7 +266,7 @@ ifeq ($(CONFIG_TARGET_OS), SunOS)
   CPPFLAGS += -D__EXTENSIONS__
 endif
 ifeq ($(CONFIG_TARGET_OS), FreeBSD)
-  SOURCE += trim.c
+  SOURCE_CXX += trim.cpp
   LIBS	 += -lpthread -lrt
   LDFLAGS += -rdynamic
 endif
@@ -277,7 +279,7 @@ ifeq ($(CONFIG_TARGET_OS), NetBSD)
   LDFLAGS += -rdynamic
 endif
 ifeq ($(CONFIG_TARGET_OS), DragonFly)
-  SOURCE += trim.c
+  SOURCE_CXX += trim.cpp
   LIBS	 += -lpthread -lrt
   LDFLAGS += -rdynamic
 endif
@@ -325,16 +327,22 @@ FIO-VERSION-FILE: FORCE
 	@$(SHELL) $(SRCDIR)/FIO-VERSION-GEN
 -include FIO-VERSION-FILE
 
-override CFLAGS := -DFIO_VERSION='"$(FIO_VERSION)"' $(FIO_CFLAGS) $(CFLAGS)
+FIO_CXX_STANDARD = -std=gnu++20
+FIO_CXXFLAGS = $(filter-out -Wdeclaration-after-statement, $(FIO_CFLAGS))
+
+override CFLAGS := -DFIO_VERSION='"$(FIO_VERSION)"' $(FIO_C_STANDARD) $(FIO_CFLAGS) $(CFLAGS)
+override CXXFLAGS := -DFIO_VERSION='"$(FIO_VERSION)"' $(FIO_CXX_STANDARD) $(FIO_CXXFLAGS) $(CXXFLAGS)
 
 $(foreach eng,$(ENGINES),$(eval $(call engine_template,$(eng))))
 
 OBJS := $(SOURCE:.c=.o)
+OBJS_CXX += $(SOURCE_CXX:.cpp=.o)
 
 FIO_OBJS = $(OBJS) fio.o
+FIO_OBJS_CXX = $(OBJS_CXX)
 
-GFIO_OBJS = $(OBJS) gfio.o graph.o tickmarks.o ghelpers.o goptions.o gerror.o \
-			gclient.o gcompat.o cairo_text_helpers.o printing.o
+GFIO_OBJS = $(OBJS) $(OBJS_CXX) gfio.o graph.o tickmarks.o ghelpers.o goptions.o gerror.o \
+		gclient.o gcompat.o cairo_text_helpers.o printing.o
 
 ifdef CONFIG_ARITHMETIC
 FIO_OBJS += lex.yy.o y.tab.o
@@ -342,6 +350,7 @@ GFIO_OBJS += lex.yy.o y.tab.o
 endif
 
 -include $(OBJS:.o=.d)
+-include $(OBJS_CXX:.o=.d)
 
 T_SMALLOC_OBJS = t/stest.o
 T_SMALLOC_OBJS += gettime.o fio_sem.o pshared.o smalloc.o t/log.o t/debug.o \
@@ -403,6 +412,7 @@ T_TT_PROGS = t/time-test
 ifneq (,$(findstring -DFUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION,$(CFLAGS)))
 T_FUZZ_OBJS = t/fuzz/fuzz_parseini.o
 T_FUZZ_OBJS += $(OBJS)
+T_FUZZ_OBJS_CXX = $(OBJS_CXX)
 ifdef CONFIG_ARITHMETIC
 T_FUZZ_OBJS += lex.yy.o y.tab.o
 endif
@@ -437,6 +447,7 @@ T_OBJS += $(T_MEMLOCK_OBJS)
 T_OBJS += $(T_TT_OBJS)
 T_OBJS += $(T_IOU_RING_OBJS)
 T_OBJS += $(T_FUZZ_OBJS)
+T_OBJS += $(T_FUZZ_OBJS_CXX)
 
 ifneq (,$(findstring CYGWIN,$(CONFIG_TARGET_OS)))
     T_DEDUPE_OBJS += $(WINDOWS_OBJS)
@@ -492,6 +503,7 @@ endif
 ifneq ($(findstring $(MAKEFLAGS),s),s)
 ifndef V
 	QUIET_CC	= @echo '   ' CC $@;
+	QUIET_CXX	= @echo '  ' CXX $@;
 	QUIET_LINK	= @echo ' ' LINK $@;
 	QUIET_DEP	= @echo '  ' DEP $@;
 	QUIET_YACC	= @echo ' ' YACC $@;
@@ -537,6 +549,22 @@ all: $(PROGS) $(T_TEST_PROGS) $(UT_PROGS) $(SCRIPTS) $(ENGS_OBJS) FORCE
 	fi
 	@rm -f $*.d.tmp
 
+%.o : %.cpp
+	@mkdir -p $(dir $@)
+	$(QUIET_CXX)$(CXX) -o $@ $(CXXFLAGS) $(CPPFLAGS) -c $<
+	@$(CXX) -MM $(CXXFLAGS) $(CPPFLAGS) $(SRCDIR)/$*.cpp > $*.d
+	@mv -f $*.d $*.d.tmp
+	@sed -e 's|.*:|$*.o:|' < $*.d.tmp > $*.d
+	@if type -p fmt >/dev/null 2>&1; then       \
+		sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp | fmt -w 1 |  \
+		sed -e 's/^ *//' -e 's/$$/:/' >> $*.d;      \
+	else                \
+		sed -e 's/.*://' -e 's/\\$$//' < $*.d.tmp |   \
+		tr -cs "[:graph:]" "\n" |       \
+		sed -e 's/^ *//' -e '/^$$/ d' -e 's/$$/:/' >> $*.d; \
+	fi
+	@rm -f $*.d.tmp
+
 ifdef CONFIG_ARITHMETIC
 lex.yy.c: exp/expression-parser.l
 ifdef CONFIG_LEX_USE_O
@@ -574,34 +602,34 @@ exp/test-expression-parser: exp/test-expression-parser.o
 parse.o: lex.yy.o y.tab.o
 endif
 
-init.o: init.c FIO-VERSION-FILE
+init.o: init.cpp FIO-VERSION-FILE
 
-gcompat.o: gcompat.c gcompat.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+gcompat.o: gcompat.cpp gcompat.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-goptions.o: goptions.c goptions.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+goptions.o: goptions.cpp goptions.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-ghelpers.o: ghelpers.c ghelpers.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+ghelpers.o: ghelpers.cpp ghelpers.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-gerror.o: gerror.c gerror.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+gerror.o: gerror.cpp gerror.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-gclient.o: gclient.c gclient.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+gclient.o: gclient.cpp gclient.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-gfio.o: gfio.c ghelpers.c
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+gfio.o: gfio.cpp ghelpers.cpp
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-graph.o: graph.c graph.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+graph.o: graph.cpp graph.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-cairo_text_helpers.o: cairo_text_helpers.c cairo_text_helpers.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+cairo_text_helpers.o: cairo_text_helpers.cpp cairo_text_helpers.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
-printing.o: printing.c printing.h
-	$(QUIET_CC)$(CC) $(CFLAGS) $(GTK_CFLAGS) $(CPPFLAGS) -c $<
+printing.o: printing.cpp printing.h
+	$(QUIET_CXX)$(CXX) $(CXXFLAGS) $(GTK_CXXFLAGS) $(CPPFLAGS) -c $<
 
 t/io_uring.o: os/linux/io_uring.h
 t/io_uring: $(T_IOU_RING_OBJS)
@@ -619,18 +647,18 @@ t/stest: $(T_SMALLOC_OBJS)
 t/ieee754: $(T_IEEE_OBJS)
 	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_IEEE_OBJS) $(LIBS)
 
-fio: $(FIO_OBJS)
-	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(FIO_OBJS) $(LIBS) $(HDFSLIB)
+fio: $(FIO_OBJS) $(FIO_OBJS_CXX)
+	$(QUIET_LINK)$(CXX) $(LDFLAGS) -o $@ $(FIO_OBJS) $(FIO_OBJS_CXX) $(LIBS) $(HDFSLIB)
 
-t/fuzz/fuzz_parseini: $(T_FUZZ_OBJS)
+t/fuzz/fuzz_parseini: $(T_FUZZ_OBJS) $(T_FUZZ_OBJS_CXX)
 ifndef LIB_FUZZING_ENGINE
-	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_FUZZ_OBJS) $(LIBS) $(HDFSLIB)
+	$(QUIET_LINK)$(CXX) $(LDFLAGS) -o $@ $(T_FUZZ_OBJS) $(T_FUZZ_OBJS_CXX) $(LIBS) $(HDFSLIB)
 else
-	$(QUIET_LINK)$(CXX) $(LDFLAGS) -o $@ $(T_FUZZ_OBJS) $(LIB_FUZZING_ENGINE) $(LIBS) $(HDFSLIB)
+	$(QUIET_LINK)$(CXX) $(LDFLAGS) -o $@ $(T_FUZZ_OBJS) $(T_FUZZ_OBJS_CXX) $(LIB_FUZZING_ENGINE) $(LIBS) $(HDFSLIB)
 endif
 
 gfio: $(GFIO_OBJS)
-	$(QUIET_LINK)$(CC) $(filter-out -static, $(LDFLAGS)) -o gfio $(GFIO_OBJS) $(LIBS) $(GFIO_LIBS) $(GTK_LDFLAGS) $(HDFSLIB)
+	$(QUIET_LINK)$(CXX) $(filter-out -static, $(LDFLAGS)) -o gfio $(GFIO_OBJS) $(LIBS) $(GFIO_LIBS) $(GTK_LDFLAGS) $(HDFSLIB)
 
 t/fio-genzipf: $(T_ZIPF_OBJS)
 	$(QUIET_LINK)$(CC) $(LDFLAGS) -o $@ $(T_ZIPF_OBJS) $(LIBS)
@@ -666,7 +694,7 @@ unittests/unittest: $(UT_OBJS) $(UT_TARGET_OBJS)
 endif
 
 clean: FORCE
-	@rm -f .depend $(FIO_OBJS) $(GFIO_OBJS) $(OBJS) $(T_OBJS) $(UT_OBJS) $(PROGS) $(T_PROGS) $(T_TEST_PROGS) core.* core gfio unittests/unittest FIO-VERSION-FILE *.[do] lib/*.d oslib/*.[do] crc/*.d engines/*.[do] engines/*.so profiles/*.[do] t/*.[do] t/*/*.[do] unittests/*.[do] unittests/*/*.[do] config-host.mak config-host.h y.tab.[ch] lex.yy.c exp/*.[do] lexer.h
+	@rm -f .depend $(FIO_OBJS) $(FIO_OBJS_CXX) $(GFIO_OBJS) $(OBJS) $(OBJS_CXX) $(T_OBJS) $(UT_OBJS) $(PROGS) $(T_PROGS) $(T_TEST_PROGS) core.* core gfio unittests/unittest FIO-VERSION-FILE *.[do] lib/*.d oslib/*.[do] crc/*.d engines/*.[do] engines/*.so profiles/*.[do] t/*.[do] t/*/*.[do] unittests/*.[do] unittests/*/*.[do] config-host.mak config-host.h y.tab.[ch] lex.yy.c exp/*.[do] lexer.h
 	@rm -f t/fio-btrace2fio t/io_uring t/read-to-pipe-async
 	@rm -rf  doc/output
 

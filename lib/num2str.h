@@ -12,6 +12,14 @@ enum n2s_unit {
 	N2S_BITPERSEC	= 5,
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern char *num2str(uint64_t, int, int, int, enum n2s_unit);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25 FATAL_ERROR)
 project(fio
         VERSION 3.35.0
         HOMEPAGE_URL "https://github.com/axboe/fio"
-        LANGUAGES C
+        LANGUAGES C CXX
         DESCRIPTION "Flexible I/O Tester")
 
 option(ENABLE_PDB "Enable Windows PDB symbols generation (needs clang/lld)")
@@ -184,30 +184,30 @@ message(STATUS "Static build " ${BUILD_STATIC})
 include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 set(FIO_SOURCES
-    backend.c
-    blktrace.c
-    cconv.c
-    cgroup.c
-    client.c
-    crc/crc16.c
-    crc/crc32.c
-    crc/crc32c-arm64.c
-    crc/crc32c-intel.c
-    crc/crc32c.c
-    crc/crc64.c
-    crc/crc7.c
-    crc/fnv.c
-    crc/md5.c
-    crc/murmur3.c
-    crc/sha1.c
-    crc/sha256.c
-    crc/sha3.c
-    crc/sha512.c
-    crc/test.c
-    crc/xxhash.c
-    debug.c
-    dedupe.c
-    diskutil.c
+    backend.cpp
+    blktrace.cpp
+    cconv.cpp
+    cgroup.cpp
+    client.cpp
+    crc/crc16.cpp
+    crc/crc32.cpp
+    crc/crc32c-arm64.cpp
+    crc/crc32c-intel.cpp
+    crc/crc32c.cpp
+    crc/crc64.cpp
+    crc/crc7.cpp
+    crc/fnv.cpp
+    crc/md5.cpp
+    crc/murmur3.cpp
+    crc/sha1.cpp
+    crc/sha256.cpp
+    crc/sha3.cpp
+    crc/sha512.cpp
+    crc/test.cpp
+    crc/xxhash.cpp
+    debug.cpp
+    dedupe.cpp
+    diskutil.cpp
     engines/cpu.c
     engines/exec.c
     engines/fileoperations.c
@@ -216,67 +216,67 @@ set(FIO_SOURCES
     engines/net.c
     engines/null.c
     engines/sync.c
-    eta.c
-    fdp.c
-    filehash.c
-    filelock.c
-    filesetup.c
-    fio_sem.c
-    flow.c
-    gettime-thread.c
-    gettime.c
-    helper_thread.c
-    helpers.c
-    idletime.c
-    init.c
-    io_u.c
-    io_u_queue.c
-    ioengines.c
-    iolog.c
-    json.c
-    lib/axmap.c
-    lib/bloom.c
-    lib/flist_sort.c
-    lib/gauss.c
-    lib/getrusage.c
-    lib/hweight.c
-    lib/ieee754.c
-    lib/lfsr.c
-    lib/memalign.c
-    lib/memcpy.c
-    lib/mountcheck.c
-    lib/num2str.c
-    lib/output_buffer.c
-    lib/pattern.c
-    lib/prio_tree.c
-    lib/rand.c
-    lib/rbtree.c
-    lib/strntol.c
-    lib/zipf.c
-    libfio.c
-    log.c
-    memory.c
-    optgroup.c
-    options.c
-    oslib/linux-dev-lookup.c
-    parse.c
-    profile.c
-    profiles/act.c
-    profiles/tiobench.c
-    pshared.c
-    rate-submit.c
-    rwlock.c
-    server.c
-    smalloc.c
-    stat.c
-    steadystate.c
-    td_error.c
-    time.c
-    trim.c
-    verify.c
-    workqueue.c
-    zbd.c
-    zone-dist.c
+    eta.cpp
+    fdp.cpp
+    filehash.cpp
+    filelock.cpp
+    filesetup.cpp
+    fio_sem.cpp
+    flow.cpp
+    gettime-thread.cpp
+    gettime.cpp
+    helper_thread.cpp
+    helpers.cpp
+    idletime.cpp
+    init.cpp
+    io_u.cpp
+    io_u_queue.cpp
+    ioengines.cpp
+    iolog.cpp
+    json.cpp
+    lib/axmap.cpp
+    lib/bloom.cpp
+    lib/flist_sort.cpp
+    lib/gauss.cpp
+    lib/getrusage.cpp
+    lib/hweight.cpp
+    lib/ieee754.cpp
+    lib/lfsr.cpp
+    lib/memalign.cpp
+    lib/memcpy.cpp
+    lib/mountcheck.cpp
+    lib/num2str.cpp
+    lib/output_buffer.cpp
+    lib/pattern.cpp
+    lib/prio_tree.cpp
+    lib/rand.cpp
+    lib/rbtree.cpp
+    lib/strntol.cpp
+    lib/zipf.cpp
+    libfio.cpp
+    log.cpp
+    memory.cpp
+    optgroup.cpp
+    options.cpp
+    oslib/linux-dev-lookup.cpp
+    parse.cpp
+    profile.cpp
+    profiles/act.cpp
+    profiles/tiobench.cpp
+    pshared.cpp
+    rate-submit.cpp
+    rwlock.cpp
+    server.cpp
+    smalloc.cpp
+    stat.cpp
+    steadystate.cpp
+    td_error.cpp
+    time.cpp
+    trim.cpp
+    verify.cpp
+    workqueue.cpp
+    zbd.cpp
+    zone-dist.cpp
 )
 
 set(CMAKE_REQUIRED_INCLUDES_DEFAULT)
@@ -2432,34 +2432,34 @@ if (CONFIG_DFS)
     list(APPEND ENGINES http)
 endif ()
 
-list(APPEND FIO_SOURCES oslib/asprintf.c)
+list(APPEND FIO_SOURCES oslib/asprintf.cpp)
 
 if (NOT CONFIG_STRSEP)
-  list(APPEND FIO_SOURCES oslib/strsep.c)
+  list(APPEND FIO_SOURCES oslib/strsep.cpp)
 endif ()
 
 if (NOT CONFIG_STRCASESTR)
-  list(APPEND FIO_SOURCES oslib/strcasestr.c)
+  list(APPEND FIO_SOURCES oslib/strcasestr.cpp)
 endif ()
 
 if (NOT CONFIG_STRLCAT)
-  list(APPEND FIO_SOURCES oslib/strlcat.c)
+  list(APPEND FIO_SOURCES oslib/strlcat.cpp)
 endif ()
 
 if (NOT CONFIG_HAVE_STRNDUP)
-  list(APPEND FIO_SOURCES oslib/strndup.c)
+  list(APPEND FIO_SOURCES oslib/strndup.cpp)
 endif ()
 
 if (NOT CONFIG_GETOPT_LONG_ONLY)
-  list(APPEND FIO_SOURCES oslib/getopt_long.c)
+  list(APPEND FIO_SOURCES oslib/getopt_long.cpp)
 endif ()
 
 if (NOT CONFIG_INET_ATON)
-  list(APPEND FIO_SOURCES oslib/inet_aton.c)
+  list(APPEND FIO_SOURCES oslib/inet_aton.cpp)
 endif ()
 
 if (NOT CONFIG_HAVE_STATX)
-  list(APPEND FIO_SOURCES oslib/statx.c)
+  list(APPEND FIO_SOURCES oslib/statx.cpp)
 endif ()
 
 if (CONFIG_GFAPI)
@@ -2473,7 +2473,7 @@ if (CONFIG_GFAPI)
 endif ()
 
 if (CONFIG_MTD)
-    list(APPEND FIO_SOURCES engines/mtd.c oslib/libmtd.c oslib/libmtd_legacy.c)
+    list(APPEND FIO_SOURCES engines/mtd.c oslib/libmtd.cpp oslib/libmtd_legacy.cpp)
 endif ()
 
 if (CONFIG_LINUX_DEVDAX)
@@ -2512,19 +2512,19 @@ endif ()
 
 if (${CONFIG_TARGET_OS} MATCHES "Linux|Android")
     list(APPEND FIO_SOURCES
-         diskutil.c
-         fifo.c
-         blktrace.c
-         cgroup.c
-         trim.c
+         diskutil.cpp
+         fifo.cpp
+         blktrace.cpp
+         cgroup.cpp
+         trim.cpp
          engines/sg.c
-         oslib/linux-dev-lookup.c
+         oslib/linux-dev-lookup.cpp
          engines/io_uring.c
          engines/nvme.c
          engines/cmdprio.c)
 
     if (CONFIG_HAS_BLKZONED)
-        list(APPEND FIO_SOURCES oslib/linux-blkzoned.c)
+        list(APPEND FIO_SOURCES oslib/linux-blkzoned.cpp)
     endif ()
 
     list(APPEND FIO_LIBRARIES ${CMAKE_DL_LIBS})
@@ -2536,7 +2536,7 @@ if (${CONFIG_TARGET_OS} STREQUAL "Linux")
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "Android")
-    list(APPEND FIO_SOURCES profiles/tiobench.c)
+    list(APPEND FIO_SOURCES profiles/tiobench.cpp)
     list(APPEND FIO_LIBRARIES log)
 endif ()
 
@@ -2549,7 +2549,7 @@ if (${CONFIG_TARGET_OS} STREQUAL "SunOS")
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "FreeBSD")
-    list(APPEND FIO_SOURCES trim.c)
+    list(APPEND FIO_SOURCES trim.cpp)
     list(APPEND FIO_LIBRARIES
          Threads::Threads
          ${CMAKE_DL_LIBS}
@@ -2570,7 +2570,7 @@ if (${CONFIG_TARGET_OS} STREQUAL "NetBSD")
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "DragonFly")
-    list(APPEND FIO_SOURCES trim.c)
+    list(APPEND FIO_SOURCES trim.cpp)
     list(APPEND FIO_LIBRARIES
          Threads::Threads
          rt)
@@ -2649,26 +2649,26 @@ add_link_options(
     $<$<BOOL:${CONFIG_PDB}>:-fuse-ld=lld>
 )
 
-add_executable(fio fio.c ${FIO_SOURCES})
+add_executable(fio fio.cpp ${FIO_SOURCES})
 target_link_libraries(fio PRIVATE ${FIO_LIBRARIES})
 install(TARGETS fio RUNTIME DESTINATION bin)
 
 if (CONFIG_GFIO)
     set(GFIO_SOURCES
-        graph.c
-        tickmarks.c
-        ghelpers.c
-        goptions.c
-        gerror.c
-        gclient.c
-        gcompat.c
-        cairo_text_helpers.c
-        printing.c
+        graph.cpp
+        tickmarks.cpp
+        ghelpers.cpp
+        goptions.cpp
+        gerror.cpp
+        gclient.cpp
+        gcompat.cpp
+        cairo_text_helpers.cpp
+        printing.cpp
     )
     list(APPEND GFIO_SOURCES ${FIO_SOURCES})
     list(APPEND GFIO_LIBRARIES ${FIO_LIBRARIES})
 
-    add_executable(gfio gfio.c ${GFIO_SOURCES})
+    add_executable(gfio gfio.cpp ${GFIO_SOURCES})
     # target_include_directories(gfio PRIVATE ${GFIO_INCLUDE_DIRS})
     target_compile_options(gfio PRIVATE ${GFIO_CFLAGS})
     target_link_libraries(gfio PRIVATE ${GFIO_LIBRARIES})

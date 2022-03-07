@@ -1,7 +1,13 @@
 #ifndef __JSON__H
 #define __JSON__H
 
+#include "string.h"
+
 #include "lib/output_buffer.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define JSON_TYPE_STRING 0
 #define JSON_TYPE_INTEGER 1
@@ -177,4 +183,9 @@ static inline int json_array_add_value_array(struct json_array *obj,
 	(obj->values[obj->value_cnt - 1]->object)
 
 void json_print_object(struct json_object *obj, struct buf_output *out);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

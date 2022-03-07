@@ -10,6 +10,10 @@
 #include "lib/pattern.h"
 #include "td_error.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum fio_zone_mode {
 	ZONE_MODE_NOT_SPECIFIED	= 0,
 	ZONE_MODE_NONE		= 1,
@@ -734,5 +738,9 @@ extern int split_parse_ddir(struct thread_options *o, struct split *split,
 extern int split_parse_prio_ddir(struct thread_options *o,
 				 struct split_prio **entries, int *nr_entries,
 				 char *str);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

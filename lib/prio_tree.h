@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct prio_tree_node {
 	struct prio_tree_node	*left;
 	struct prio_tree_node	*right;
@@ -85,5 +89,9 @@ struct prio_tree_node *prio_tree_insert(struct prio_tree_root *root,
                 struct prio_tree_node *node);
 void prio_tree_remove(struct prio_tree_root *root, struct prio_tree_node *node);
 struct prio_tree_node *prio_tree_next(struct prio_tree_iter *iter);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _LINUX_PRIO_TREE_H */

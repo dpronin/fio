@@ -3,6 +3,10 @@
 
 #include "lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	FD_PROCESS	= 0,
 	FD_FILE,
@@ -70,6 +74,10 @@ void __dprint(int type, const char *str, ...) __attribute__((format (printf, 2, 
 
 static inline void dprint(int type, const char *str, ...)
 {
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif
 

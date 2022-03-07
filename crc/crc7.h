@@ -1,6 +1,10 @@
 #ifndef CRC7_H
 #define CRC7_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern const unsigned char crc7_syndrome_table[256];
 
 static inline unsigned char crc7_byte(unsigned char crc, unsigned char data)
@@ -9,5 +13,9 @@ static inline unsigned char crc7_byte(unsigned char crc, unsigned char data)
 }
 
 extern unsigned char fio_crc7(const unsigned char *buffer, unsigned int len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

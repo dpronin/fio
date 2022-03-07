@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint64_t pack754(long double f, unsigned bits, unsigned expbits);
 extern long double unpack754(uint64_t i, unsigned bits, unsigned expbits);
 
@@ -16,5 +20,9 @@ typedef struct fio_fp64 {
 		uint8_t filler[16];
 	} u;
 } fio_fp64_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
