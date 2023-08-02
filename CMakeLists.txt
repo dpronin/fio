@@ -284,6 +284,16 @@ set(CMAKE_REQUIRED_FLAGS_DEFAULT -Werror-implicit-function-declaration)
 set(CMAKE_REQUIRED_LIBRARIES_DEFAULT)
 set(CMAKE_REQUIRED_DEFINITIONS_DEFAULT -D_GNU_SOURCE)
 
+macro(notice_config NAME FLAG)
+    if (${FLAG})
+        set(VAR_FLAG YES)
+    else ()
+        set(VAR_FLAG NO)
+    endif ()
+    message(NOTICE "${NAME} ${VAR_FLAG}")
+    unset(VAR_FLAG)
+endmacro()
+
 macro(compile_c_program_and_check NAME SOURCE INCLUDES FLAGS DEFINITIONS LIBRARIES CHECK_VAR)
     set(CMAKE_REQUIRED_QUIET YES)
     set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES_DEFAULT} ${INCLUDES})
@@ -302,7 +312,7 @@ macro(compile_c_program_and_check NAME SOURCE INCLUDES FLAGS DEFINITIONS LIBRARI
     else ()
         set(${CHECK_VAR} NO)
     endif()
-    message(NOTICE "${NAME} ${${CHECK_VAR}}")
+    notice_config(${NAME} ${${CHECK_VAR}})
 endmacro()
 
 function(EXEC prog RESULT)
@@ -356,15 +366,13 @@ set(WORDSIZE_CHECK_CODE
     }
     "
 )
-compile_c_program_and_check("Wordsize-32" WORDSIZE_CHECK_CODE "" "" "-DWORDSIZE=32" "" HAS_WORDSIZE_32)
-if (HAS_WORDSIZE_32)
+compile_c_program_and_check("Wordsize-32" WORDSIZE_CHECK_CODE "" "" "-DWORDSIZE=32" "" CONFIG_32BIT)
+if (CONFIG_32BIT)
     set(WORDSIZE 32)
-    set(CONFIG_32BIT YES)
 else ()
-    compile_c_program_and_check("Wordsize-64" WORDSIZE_CHECK_CODE "" "" "-DWORDSIZE=64" "" HAS_WORDSIZE_64)
-    if (HAS_WORDSIZE_64)
+    compile_c_program_and_check("Wordsize-64" WORDSIZE_CHECK_CODE "" "" "-DWORDSIZE=64" "" CONFIG_64BIT)
+    if (CONFIG_64BIT)
         set(WORDSIZE 64)
-        set(CONFIG_64BIT YES)
     else()
         message(FATAL_ERROR "Unknown wordsize!")
     endif ()
@@ -375,22 +383,17 @@ add_compile_definitions(BITS_PER_LONG=${WORDSIZE})
 ##########################################
 # zlib probe
 
-set(ZLIB_CHECK_CODE
-    "
-    #include <zlib.h>
-    int main(void)
-    {
-      z_stream stream;
-      if (inflateInit(&stream) != Z_OK)
-        return 1;
-      return 0;
-    }
-    "
-)
-compile_c_program_and_check("zlib" ZLIB_CHECK_CODE "" "" "-DWORDSIZE=64" "-lz" CONFIG_ZLIB)
-if (CONFIG_ZLIB)
-    list(APPEND FIO_LIBRARIES z)
+if (BUILD_STATIC)
+    set(ZLIB_USE_STATIC_LIBS ON)
 endif ()
+
+find_package(ZLIB)
+if (ZLIB_FOUND)
+    set(CONFIG_ZLIB YES)
+    list(APPEND FIO_LIBRARIES ZLIB::ZLIB)
+endif ()
+
+notice_config("zlib" CONFIG_ZLIB)
 
 ##########################################
 # fcntl(F_FULLFSYNC) support
@@ -406,8 +409,7 @@ set(FCNTL_SYNC_CODE
     }
     "
 )
-compile_c_program_and_check("fcntl(F_FULLFSYNC)" WORDSIZE_CHECK_CODE "" "" "" "" HAS_FCNTL_FSYNC)
-
+compile_c_program_and_check("fcntl(F_FULLFSYNC)" WORDSIZE_CHECK_CODE "" "" "" "" CONFIG_FCNTL_SYNC)
 
 if (NOT ESX)
     ##########################################
@@ -533,9 +535,6 @@ if (PTHREAD_CONDATTR_SETCLOCK)
         "
     )
     compile_c_program_and_check("pthread_condattr_setclock()" PTHREAD_CONDATTR_SETLOCK_CHECK_CODE "" "" "" "-lpthread" CONFIG_PTHREAD_CONDATTR_SETCLOCK)
-    if (CONFIG_PTHREAD_CONDATTR_SETCLOCK)
-        list(APPEND FIO_LIBRARIES Threads::Threads)
-    endif ()
 endif ()
 
 ##########################################
@@ -552,9 +551,6 @@ set(PTHREAD_SIGMASK_CHECK_CODE
     "
 )
 compile_c_program_and_check("pthread_sigmask()" PTHREAD_SIGMASK_CHECK_CODE "" "" "" "-lpthread" CONFIG_PTHREAD_SIGMASK)
-if (CONFIG_PTHREAD_SIGMASK)
-    list(APPEND FIO_LIBRARIES Threads::Threads)
-endif ()
 
 ##########################################
 # pthread_getaffinity_np() probe
@@ -572,9 +568,6 @@ set(PTHREAD_GETAFFINITY_CHECK_CODE
     "
 )
 compile_c_program_and_check("pthread_getaffinity_np()" PTHREAD_GETAFFINITY_CHECK_CODE "" "" "" "-lpthread" CONFIG_PTHREAD_GETAFFINITY)
-if (CONFIG_PTHREAD_GETAFFINITY)
-    list(APPEND FIO_LIBRARIES Threads::Threads)
-endif ()
 
 ##########################################
 # solaris aio probe
@@ -2527,12 +2520,7 @@ if (${CONFIG_TARGET_OS} MATCHES "Linux|Android")
         list(APPEND FIO_SOURCES oslib/linux-blkzoned.cpp)
     endif ()
 
-    list(APPEND FIO_LIBRARIES ${CMAKE_DL_LIBS})
     add_link_options(-rdynamic)
-endif ()
-
-if (${CONFIG_TARGET_OS} STREQUAL "Linux")
-    list(APPEND FIO_LIBRARIES Threads::Threads)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "Android")
@@ -2541,47 +2529,31 @@ if (${CONFIG_TARGET_OS} STREQUAL "Android")
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "SunOS")
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         ${CMAKE_DL_LIBS}
-        )
     add_compile_definitions(__EXTENSIONS__)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "FreeBSD")
     list(APPEND FIO_SOURCES trim.cpp)
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         ${CMAKE_DL_LIBS}
-        )
     add_link_options(-rdynamic)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "OpenBSD")
-    list(APPEND FIO_LIBRARIES Threads::Threads)
     add_link_options(-rdynamic)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "NetBSD")
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         rt)
+    list(APPEND FIO_LIBRARIES rt)
     add_link_options(-rdynamic)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "DragonFly")
     list(APPEND FIO_SOURCES trim.cpp)
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         rt)
+    list(APPEND FIO_LIBRARIES rt)
     add_link_options(-rdynamic)
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "AIX")
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         ${CMAKE_DL_LIBS}
-         rt)
+    list(APPEND FIO_LIBRARIES rt)
     add_compile_definitions(_LARGE_FILES __ppc__)
     add_link_options(-L/opt/freeware/lib
                      -Wl,-blibpath:/opt/freeware/lib:/usr/lib:/lib
@@ -2589,17 +2561,8 @@ if (${CONFIG_TARGET_OS} STREQUAL "AIX")
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "HP-UX")
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         ${CMAKE_DL_LIBS}
-         rt)
+    list(APPEND FIO_LIBRARIES rt)
     add_compile_definition(_LARGEFILE64_SOURCE _XOPEN_SOURCE_EXTENDED)
-endif ()
-
-if (${CONFIG_TARGET_OS} STREQUAL "Darwin")
-    list(APPEND FIO_LIBRARIES
-         Threads::Threads
-         ${CMAKE_DL_LIBS})
 endif ()
 
 if (${CONFIG_TARGET_OS} STREQUAL "CYGWIN")
@@ -2609,7 +2572,6 @@ if (${CONFIG_TARGET_OS} STREQUAL "CYGWIN")
          os/windows/dlls.c)
     # WINDOWS_OBJS = os/windows/cpu-affinity.o os/windows/posix.o os/windows/dlls.o lib/hweight.o
     list(APPEND FIO_LIBRARIES
-         Threads::Threads
          psapi
          ws2_32
          ssp)
