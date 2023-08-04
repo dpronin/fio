@@ -6,6 +6,10 @@
 
 #include "lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct io_u;
 
 struct io_u_queue {
@@ -85,5 +89,9 @@ static inline int io_u_rempty(struct io_u_ring *ring)
 {
 	return ring->head == ring->tail;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

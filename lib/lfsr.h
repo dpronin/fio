@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FIO_MAX_TAPS	6
 
 struct lfsr_taps {
@@ -26,5 +30,9 @@ int lfsr_next(struct fio_lfsr *fl, uint64_t *off);
 int lfsr_init(struct fio_lfsr *fl, uint64_t size,
 	      uint64_t seed, unsigned int spin);
 int lfsr_reset(struct fio_lfsr *fl, uint64_t seed);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

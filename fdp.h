@@ -3,6 +3,10 @@
 
 #include "io_u.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FDP_DIR_DTYPE	2
 #define FDP_MAX_RUHS	128
 
@@ -25,5 +29,9 @@ struct fio_ruhs_info {
 int fdp_init(struct thread_data *td);
 void fdp_free_ruhs_info(struct fio_file *f);
 void fdp_fill_dspec_data(struct thread_data *td, struct io_u *io_u);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FIO_FDP_H */

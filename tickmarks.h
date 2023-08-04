@@ -6,7 +6,15 @@ struct tickmark {
 	char string[20];
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int calc_tickmarks(double min, double max, int nticks, struct tickmark **tm,
 			int *power_of_ten, int use_KMG_symbols, int base_off);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

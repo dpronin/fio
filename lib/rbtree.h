@@ -97,6 +97,10 @@ static inline struct page * rb_insert_page_cache(struct inode * inode,
 #include <stdlib.h>
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fio_rb_node
 {
 	intptr_t rb_parent_color;
@@ -152,5 +156,9 @@ static inline void rb_link_node(struct fio_rb_node * node,
 
 	*rb_link = node;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif	/* _LINUX_RBTREE_H */

@@ -12,9 +12,17 @@ struct gauss_state {
 	bool disable_hash;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void gauss_init(struct gauss_state *gs, unsigned long nranges, double dev,
 		double center, unsigned int seed);
 unsigned long long gauss_next(struct gauss_state *gs);
 void gauss_disable_hash(struct gauss_state *gs);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

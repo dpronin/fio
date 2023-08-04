@@ -5,6 +5,10 @@
 #include "compiler/compiler.h"
 #include "verify-state.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FIO_HDR_MAGIC	0xacca
 
 enum {
@@ -111,5 +115,9 @@ extern void verify_async_exit(struct thread_data *);
  * Callbacks for pasting formats in the pattern buffer
  */
 extern int paste_blockoff(char *buf, unsigned int len, void *priv);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

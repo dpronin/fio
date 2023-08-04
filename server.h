@@ -9,6 +9,10 @@
 #include "stat.h"
 #include "diskutil.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FIO_NET_PORT 8765
 
 struct sk_out {
@@ -240,5 +244,9 @@ extern void fio_server_destroy_sk_key(void);
 
 extern bool exit_backend;
 extern int fio_net_port;
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
 
 #endif

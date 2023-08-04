@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SHA256_DIGEST_SIZE	32
 #define SHA256_BLOCK_SIZE	64
 
@@ -15,5 +19,9 @@ struct fio_sha256_ctx {
 void fio_sha256_init(struct fio_sha256_ctx *);
 void fio_sha256_update(struct fio_sha256_ctx *, const uint8_t *, unsigned int);
 void fio_sha256_final(struct fio_sha256_ctx *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

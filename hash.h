@@ -97,7 +97,7 @@ static inline uint32_t rol32(uint32_t word, uint32_t shift)
 
 static inline uint32_t jhash(const void *key, uint32_t length, uint32_t initval)
 {
-	const uint8_t *k = key;
+	const uint8_t *k = (const uint8_t*)(key);
 	uint32_t a, b, c;
 
 	/* Set up the internal state */

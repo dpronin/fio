@@ -6,6 +6,10 @@
 #include "arch/arch.h"
 #include "lib/seqlock.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Clock sources
  */
@@ -45,5 +49,9 @@ static inline int fio_gettime_offload(struct timespec *ts)
 }
 
 extern void fio_gtod_set_cpu(unsigned int cpu);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

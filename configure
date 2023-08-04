@@ -46,6 +46,7 @@ print_config() {
 # Default CFLAGS
 CFLAGS="-D_GNU_SOURCE -include config-host.h $CFLAGS"
 CONFIGURE_CFLAGS="-Werror-implicit-function-declaration"
+CONFIGURE_CXXFLAGS=${CONFIGURE_CFLAGS}
 BUILD_CFLAGS=""
 
 # Print a helpful header at the top of config.log
@@ -92,11 +93,22 @@ compile_object() {
   do_cc $CFLAGS $CONFIGURE_CFLAGS -c -o $TMPO $TMPC
 }
 
+compile_object_cxx() {
+  do_cxx $CXXFLAGS $CONFIGURE_CXXFLAGS -c -o $TMPO $TMPCXX
+}
+
 compile_prog() {
   local_cflags="$1"
   local_ldflags="$2 $LIBS"
   echo "Compiling test case $3" >> config.log
   do_cc $CFLAGS $CONFIGURE_CFLAGS $local_cflags -o $TMPE $TMPC $LDFLAGS $local_ldflags
+}
+
+compile_prog_cxx() {
+  local_cxxflags="$1"
+  local_ldflags="$2 $LIBS"
+  echo "Compiling test case $3" >> config.log
+  do_cxx $CFLAGS $CONFIGURE_CXXFLAGS $local_cxxflags -o $TMPE $TMPCXX $LDFLAGS $local_ldflags
 }
 
 feature_not_found() {
@@ -196,6 +208,8 @@ for opt do
   ;;
   --cc=*) CC="$optarg"
   ;;
+  --cxx=*) CXX="$optarg"
+  ;;
   --extra-cflags=*) CFLAGS="$CFLAGS $optarg"
   ;;
   --build-32bit-win) build_32bit_win="yes"
@@ -279,7 +293,8 @@ done
 if test "$show_help" = "yes" ; then
   echo "--prefix=               Use this directory as installation prefix"
   echo "--cpu=                  Specify target CPU if auto-detect fails"
-  echo "--cc=                   Specify compiler to use"
+  echo "--cc=                   Specify C compiler to use"
+  echo "--cxx=                  Specify C++ compiler to use"
   echo "--extra-cflags=         Specify extra CFLAGS to pass to compiler"
   echo "--build-32bit-win       Enable 32-bit build on Windows"
   echo "--target-win-ver=       Minimum version of Windows to target (only accepts 7)"
@@ -333,6 +348,16 @@ if test -z "${CC}${cross_prefix}"; then
   fi
 else
   cc="${CC-${cross_prefix}gcc}"
+fi
+
+if test -z "${CXX}${cross_prefix}"; then
+  if has gcc; then
+    cxx=g++
+  elif has clang; then
+    cxx=clang++
+  fi
+else
+  cxx="${CXX-${cross_prefix}g++}"
 fi
 
 if check_define __ANDROID__ ; then
@@ -402,6 +427,7 @@ int main(void)
 EOF
   if compile_prog "" "-Werror=partial-availability" "error on weak symbols"; then
     CONFIGURE_CFLAGS="$CONFIGURE_CFLAGS -Werror=partial-availability"
+    CONFIGURE_CXXFLAGS=$(CONFIGURE_CFLAGS)
   fi
   ;;
 SunOS)
@@ -417,8 +443,10 @@ CYGWIN*)
   if test -z "${CC}${cross_prefix}"; then
     if test ! -z "$build_32bit_win" && test "$build_32bit_win" = "yes"; then
       cc="i686-w64-mingw32-gcc"
+      cxx="i686-w64-mingw32-g++"
     else
       cc="x86_64-w64-mingw32-gcc"
+      cxx="x86_64-w64-mingw32-g++"
     fi
   fi
 
@@ -456,6 +484,7 @@ if test -z "${CC}${cross_prefix}"; then
   if test "$targetos" = "FreeBSD" || test "$targetos" = "Darwin"; then
     if has clang; then
       cc=clang
+      cxx=clang++
     fi
   fi
 fi
@@ -595,7 +624,8 @@ print_config "Big endian" "$bigendian"
 if test ! -z "$target_win_ver"; then
   print_config "Target Windows version" "$target_win_ver"
 fi
-print_config "Compiler" "$cc"
+print_config "C Compiler" "$cc"
+print_config "CXX Compiler" "$cxx"
 print_config "Cross compile" "$cross_compile"
 echo
 
@@ -1605,6 +1635,7 @@ int main(void)
 }
 EOF
 GTK_CFLAGS=$(${cross_prefix}pkg-config --cflags gtk+-2.0 gthread-2.0)
+GTK_CXXFLAGS=${GTK_CFLAGS}
 ORG_LDFLAGS=$LDFLAGS
 LDFLAGS=$(echo $LDFLAGS | sed s/"-static"//g)
 if test "$?" != "0" ; then
@@ -1621,6 +1652,7 @@ if check_min_lib_version gtk+-2.0 2.18.0 "gfio"; then
   if compile_prog "$GTK_CFLAGS" "$GTK_LIBS" "gfio" ; then
     GFIO_LIBS="$LIBS $GTK_LIBS"
     CFLAGS="$CFLAGS $GTK_CFLAGS"
+    CXXFLAGS="$CXXFLAGS $GTK_CXXFLAGS"
   else
     echo "Please install gtk and gdk libraries"
     gfio="no"
@@ -3361,8 +3393,11 @@ print_config "seed_buckets" "$seed_buckets"
 echo "LIBS+=$LIBS" >> $config_host_mak
 echo "GFIO_LIBS+=$GFIO_LIBS" >> $config_host_mak
 echo "CFLAGS+=$CFLAGS" >> $config_host_mak
+CXXFLAGS+=${CFLAGS}
+echo "CXXFLAGS+=$CXXFLAGS" >> $config_host_mak
 echo "LDFLAGS+=$LDFLAGS" >> $config_host_mak
 echo "CC=$cc" >> $config_host_mak
+echo "CXX=$cxx" >> $config_host_mak
 echo "BUILD_CFLAGS=$BUILD_CFLAGS $CFLAGS" >> $config_host_mak
 echo "INSTALL_PREFIX=$prefix" >> $config_host_mak
 

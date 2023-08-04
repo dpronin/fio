@@ -12,6 +12,10 @@
 #include "oslib/blkzoned.h"
 #include "zbd_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fio_file;
 
 enum io_u_action {
@@ -130,5 +134,9 @@ static inline void zbd_put_io_u(struct thread_data *td, struct io_u *io_u)
 		io_u->zbd_put_io = NULL;
 	}
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* FIO_ZBD_H */

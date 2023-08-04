@@ -23,6 +23,10 @@
 #include "../arch/arch.h"
 #include "../lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern uint32_t crc32c_sw(unsigned char const *, unsigned long);
 extern bool crc32c_arm64_available;
 extern bool crc32c_intel_available;
@@ -57,5 +61,9 @@ static inline uint32_t fio_crc32c(unsigned char const *buf, unsigned long len)
 
 	return crc32c_sw(buf, len);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

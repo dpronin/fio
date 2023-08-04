@@ -7,6 +7,10 @@
 #include "flist.h"
 #include "lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct sk_out;
 struct thread_data;
 
@@ -116,4 +120,9 @@ static inline void workqueue_exit_worker(struct submit_worker *sw,
 
 	wq->ops.exit_worker_fn(sw, sum_cnt);
 }
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

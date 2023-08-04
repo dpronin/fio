@@ -5,6 +5,10 @@
 #include <sys/types.h>
 #include "os/os.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define CALIBRATE_RUNS  10
 #define CALIBRATE_SCALE 1000
 #define MAX_CPU_STR_LEN 32
@@ -59,5 +63,9 @@ extern void fio_idle_prof_stop(void);
 extern void show_idle_prof_stats(int, struct json_object *, struct buf_output *);
 
 extern void fio_idle_prof_cleanup(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

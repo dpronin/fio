@@ -19,6 +19,10 @@ enum {
 	FIO_SEM_UNLOCKED	= 1,
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern int __fio_sem_init(struct fio_sem *, int);
 extern struct fio_sem *fio_sem_init(int);
 extern void __fio_sem_remove(struct fio_sem *);
@@ -27,5 +31,9 @@ extern void fio_sem_up(struct fio_sem *);
 extern void fio_sem_down(struct fio_sem *);
 extern bool fio_sem_down_trylock(struct fio_sem *);
 extern int fio_sem_down_timeout(struct fio_sem *, unsigned int);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

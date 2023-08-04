@@ -4,9 +4,11 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define container_of(ptr, type, member)  ({			\
-	const __typeof__( ((type *)0)->member ) *__mptr = (ptr);	\
-	(type *)( (char *)__mptr - offsetof(type,member) );})
+#include "container_of.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*
  * Simple doubly linked list implementation.
@@ -194,5 +196,9 @@ static inline void flist_splice_init(struct flist_head *list,
 
 extern void flist_sort(void *priv, struct flist_head *head,
 	int (*cmp)(void *priv, struct flist_head *a, struct flist_head *b));
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -16,6 +16,10 @@ struct zipf_state {
 	bool disable_hash;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void zipf_init(struct zipf_state *zs, uint64_t nranges, double theta,
 	       double center, unsigned int seed);
 uint64_t zipf_next(struct zipf_state *zs);
@@ -24,5 +28,9 @@ void pareto_init(struct zipf_state *zs, uint64_t nranges, double h,
 		 double center, unsigned int seed);
 uint64_t pareto_next(struct zipf_state *zs);
 void zipf_disable_hash(struct zipf_state *zs);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

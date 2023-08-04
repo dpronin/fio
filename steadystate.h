@@ -3,6 +3,10 @@
 
 #include "thread_options.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void steadystate_free(struct thread_data *);
 extern int steadystate_check(void);
 extern void steadystate_setup(void);
@@ -64,5 +68,9 @@ enum {
 	FIO_SS_IOPS_SLOPE	= FIO_SS_IOPS | FIO_SS_SLOPE,
 	FIO_SS_BW_SLOPE		= FIO_SS_BW | FIO_SS_SLOPE,
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef FIO_PARSE_PATTERN_H
 #define FIO_PARSE_PATTERN_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * The pattern is dynamically allocated, but that doesn't mean there
  * are not limits. The network protocol has a limit of
@@ -51,5 +55,9 @@ int cpy_pattern(const char *pattern, unsigned int pattern_len,
 
 int cmp_pattern(const char *pattern, unsigned int pattern_size,
 		unsigned int off, const char *buf, unsigned int len);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 
 #include <inttypes.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SHA3_224_DIGEST_SIZE	(224 / 8)
 #define SHA3_224_BLOCK_SIZE	(200 - 2 * SHA3_224_DIGEST_SIZE)
 
@@ -38,5 +42,9 @@ void fio_sha3_512_init(struct fio_sha3_ctx *sctx);
 int fio_sha3_update(struct fio_sha3_ctx *sctx, const uint8_t *data,
 		    unsigned int len);
 void fio_sha3_final(struct fio_sha3_ctx *sctx);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include "diskutil.h"
 #include "json.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct group_run_stats {
 	uint64_t max_run[DDIR_RWDIR_CNT], min_run[DDIR_RWDIR_CNT];
 	uint64_t max_bw[DDIR_RWDIR_CNT], min_bw[DDIR_RWDIR_CNT];
@@ -427,5 +431,9 @@ static inline bool nsec_to_msec(unsigned long long *min,
 #define THREAD_RUNSTR_SZ	__THREAD_RUNSTR_SZ(thread_number)
 
 uint32_t *io_u_block_info(struct thread_data *td, struct io_u *io_u);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -1,6 +1,10 @@
 #ifndef FIO_CGROUP_H
 #define FIO_CGROUP_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef FIO_HAVE_CGROUPS
 
 struct cgroup_mnt {
@@ -33,4 +37,9 @@ static inline void cgroup_kill(struct flist_head *list)
 }
 
 #endif
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif

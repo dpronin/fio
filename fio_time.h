@@ -8,6 +8,10 @@
 /* IWYU pragma: end_exports */
 #include "lib/types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct thread_data;
 extern uint64_t ntime_since(const struct timespec *, const struct timespec *);
 extern uint64_t ntime_since_now(const struct timespec *);
@@ -31,5 +35,9 @@ extern bool in_ramp_time(struct thread_data *);
 extern void fio_time_init(void);
 extern void timespec_add_msec(struct timespec *, unsigned int);
 extern void set_epoch_time(struct thread_data *, int, clockid_t);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

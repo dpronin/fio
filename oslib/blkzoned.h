@@ -8,6 +8,10 @@
 
 #include "zbd_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifdef CONFIG_HAS_BLKZONED
 extern int blkzoned_get_zoned_model(struct thread_data *td,
 			struct fio_file *f, enum zbd_zoned_model *model);
@@ -67,6 +71,10 @@ static inline int blkzoned_finish_zone(struct thread_data *td,
 				       uint64_t offset, uint64_t length)
 {
 	return -EIO;
+}
+#endif
+
+#ifdef __cplusplus
 }
 #endif
 

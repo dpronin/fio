@@ -12,6 +12,10 @@
 #include <libaio.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 enum {
 	IO_U_F_FREE		= 1 << 0,
 	IO_U_F_FLIGHT		= 1 << 1,
@@ -197,5 +201,9 @@ static inline enum fio_ddir acct_ddir(struct io_u *io_u)
 	td_flags_clear((td), &(io_u->flags), (val))
 #define io_u_set(td, io_u, val)		\
 	td_flags_set((td), &(io_u)->flags, (val))
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

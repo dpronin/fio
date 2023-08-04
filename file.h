@@ -10,6 +10,13 @@
 #include "lib/lfsr.h"
 #include "lib/gauss.h"
 
+#ifdef __cplusplus
+#include <cstring>
+extern "C" {
+#else
+#include <string.h>
+#endif
+
 /* Forward declarations */
 struct zoned_block_device_info;
 struct fdp_ruh_info;
@@ -238,5 +245,9 @@ extern bool fio_files_done(struct thread_data *);
 extern bool exists_and_not_regfile(const char *);
 extern int fio_set_directio(struct thread_data *, struct fio_file *);
 extern void fio_file_free(struct fio_file *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

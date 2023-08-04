@@ -10,10 +10,18 @@ struct fio_rwlock {
 	int magic;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void fio_rwlock_read(struct fio_rwlock *);
 extern void fio_rwlock_write(struct fio_rwlock *);
 extern void fio_rwlock_unlock(struct fio_rwlock *);
 extern struct fio_rwlock *fio_rwlock_init(void);
 extern void fio_rwlock_remove(struct fio_rwlock *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

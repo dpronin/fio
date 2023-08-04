@@ -5,6 +5,10 @@
 #include <assert.h>
 #include "types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define FRAND32_MAX	(-1U)
 #define FRAND32_MAX_PLUS_ONE	(1.0 * (1ULL << 32))
 #define FRAND64_MAX	(-1ULL)
@@ -167,5 +171,9 @@ extern void __fill_random_buf(void *buf, unsigned int len, uint64_t seed);
 extern uint64_t fill_random_buf(struct frand_state *, void *buf, unsigned int len);
 extern void __fill_random_buf_percentage(uint64_t, void *, unsigned int, unsigned int, unsigned int, char *, unsigned int);
 extern uint64_t fill_random_buf_percentage(struct frand_state *, void *, unsigned int, unsigned int, unsigned int, char *, unsigned int);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

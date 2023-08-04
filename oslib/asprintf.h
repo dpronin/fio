@@ -3,11 +3,19 @@
 
 #include <stdarg.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #ifndef CONFIG_HAVE_VASPRINTF
 int vasprintf(char **strp, const char *fmt, va_list ap);
 #endif
 #ifndef CONFIG_HAVE_ASPRINTF
 int asprintf(char **strp, const char *fmt, ...);
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* FIO_ASPRINTF_H */

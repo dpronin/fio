@@ -8,6 +8,10 @@
 #include "flist.h"
 #include "ioengines.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Use for maintaining statistics
  */
@@ -322,5 +326,9 @@ struct iolog_compress {
 	size_t len;
 	unsigned int seq;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include <limits.h>
 #include "lib/nowarn_snprintf.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct thread_rand32_state {
 	uint32_t s[4];
 };
@@ -105,5 +109,9 @@ static inline void verify_state_gen_name(char *out, size_t size,
 	nowarn_snprintf(out, size, "%s-%s-%d-verify.state", prefix, ename, num);
 	out[size - 1] = '\0';
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

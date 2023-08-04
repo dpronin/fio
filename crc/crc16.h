@@ -15,14 +15,24 @@
 #ifndef __CRC16_H
 #define __CRC16_H
 
-extern unsigned short const crc16_table[256];
+#include <stdint.h>
 
-extern unsigned short fio_crc16(const void *buffer, unsigned int len);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-static inline unsigned short crc16_byte(unsigned short crc,
+extern uint16_t const crc16_table[256];
+
+extern uint16_t fio_crc16(const void *buffer, unsigned int len);
+
+static inline uint16_t crc16_byte(uint16_t crc,
 					const unsigned char data)
 {
 	return (crc >> 8) ^ crc16_table[(crc ^ data) & 0xff];
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __CRC16_H */

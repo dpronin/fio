@@ -3,6 +3,10 @@
 
 #include "io_ddir.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * What type of errors to continue on when continue_on_error is used,
  * and what type of errors to ignore when ignore_error is used.
@@ -26,5 +30,9 @@ enum error_type_bit td_error_type(enum fio_ddir ddir, int err);
 int td_non_fatal_error(struct thread_data *td, enum error_type_bit etype,
 		       int err);
 void update_error_count(struct thread_data *td, int err);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -9,6 +9,15 @@ struct statx
 {
 };
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int statx(int dfd, const char *pathname, int flags, unsigned int mask,
 	  struct statx *buffer);
+#ifdef __cplusplus
+}
+#endif
+
 #endif

@@ -4,6 +4,10 @@
 #include <inttypes.h>
 #include "flist.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * Option types
  */
@@ -150,5 +154,9 @@ struct print_option {
 	char *name;
 	char *value;
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

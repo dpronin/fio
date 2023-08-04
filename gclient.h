@@ -3,7 +3,15 @@
 
 extern struct client_ops gfio_client_ops;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 extern void gfio_display_end_results(struct gfio_client *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #define GFIO_READ_R	0.13
 #define GFIO_READ_G	0.54

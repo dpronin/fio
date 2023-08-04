@@ -69,6 +69,10 @@
 #include <cuda.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fio_sem;
 
 /*
@@ -925,5 +929,9 @@ static inline void fio_memfree(void *ptr, size_t size, bool shared)
 {
 	return __fio_memfree(ptr, size, shared ? sfree : free);
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

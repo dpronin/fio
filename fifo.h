@@ -21,6 +21,10 @@
  *
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct fifo {
 	unsigned char *buffer;	/* the buffer holding the data */
 	unsigned int size;	/* the size of the allocated buffer */
@@ -42,5 +46,9 @@ static inline unsigned int fifo_room(struct fifo *fifo)
 {
 	return fifo->size - fifo->in + fifo->out;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
